@@ -7,24 +7,49 @@ import {
     setInitialState,
     setRegister,
     setVisible,
-    visible
-} from './page-reducer';
+    visible,
+} from './page-reducer'
 
-let data: string[];
-let initialState: initialStateType;
+let data: string[]
+let initialState: initialStateType
 
 beforeEach(() => {
-
     initialState = {
         loading: loadStatus.loadingOff,
         data: [],
         registerSensitivity: false,
         visible: visible.visibleNull,
         filterString: '',
-        filterNumber: 0
+        filterNumber: 0,
     }
 
-    data = ['affenpinscher', 'NEWFOUNDLAND', 'OTTERHOUND', 'PAPILLON', 'PEKINESE', 'SWISS MOUNTAIN', 'weimaraner', 'MINIATURE PINSCHER', 'akita', 'GERMAN POINTER', 'vizsla', 'POMERANIAN', 'appenzeller', 'MINIATURE POODLE', 'yorkshire terrier', 'STANDARD POODLE', 'basenji', 'BERNESE MOUNTAIN', 'wheaten terrier', 'TOY POODLE', 'beagle', 'MEXICANHAIRLESS', 'westhighland terrier', 'PUG', 'bluetick']
+    data = [
+        'affenpinscher',
+        'NEWFOUNDLAND',
+        'OTTERHOUND',
+        'PAPILLON',
+        'PEKINESE',
+        'SWISS MOUNTAIN',
+        'weimaraner',
+        'MINIATURE PINSCHER',
+        'akita',
+        'GERMAN POINTER',
+        'vizsla',
+        'POMERANIAN',
+        'appenzeller',
+        'MINIATURE POODLE',
+        'yorkshire terrier',
+        'STANDARD POODLE',
+        'basenji',
+        'BERNESE MOUNTAIN',
+        'wheaten terrier',
+        'TOY POODLE',
+        'beagle',
+        'MEXICANHAIRLESS',
+        'westhighland terrier',
+        'PUG',
+        'bluetick',
+    ]
 })
 
 test('data should be added to state', () => {
@@ -35,41 +60,37 @@ test('data should be added to state', () => {
 })
 
 test('Filter number should be added to state', () => {
-
-    let filterNumber: number = 15;
+    let filterNumber: number = 15
 
     const state = mainPageReducer(initialState, setFilterByNumber(filterNumber))
 
-    expect(state.filterNumber > 0).toBeTruthy();
-    expect(state.filterNumber).toBe(filterNumber);
+    expect(state.filterNumber > 0).toBeTruthy()
+    expect(state.filterNumber).toBe(filterNumber)
 })
 
 test('Filter string should be added to state', () => {
-
-    let filterString: string = 'SH';
+    let filterString: string = 'SH'
 
     const state = mainPageReducer(initialState, setFilterBySubstring(filterString))
 
-    expect(state.filterString.length > 0).toBeTruthy();
-    expect(state.filterString).toBe(filterString);
+    expect(state.filterString.length > 0).toBeTruthy()
+    expect(state.filterString).toBe(filterString)
 })
 
 test('Visible value should be changed', () => {
-
-    let visibleValue: visible = visible.visibleStr;
+    let visibleValue: visible = visible.visibleStr
 
     const state = mainPageReducer(initialState, setVisible(visibleValue))
 
-    expect(state.visible).toBe(visibleValue);
-    expect(state.visible !== initialState.visible).toBeTruthy();
+    expect(state.visible).toBe(visibleValue)
+    expect(state.visible !== initialState.visible).toBeTruthy()
 })
 
 test('Register value should be changed', () => {
-
-    let registerValue: boolean = true;
+    let registerValue: boolean = true
 
     const state = mainPageReducer(initialState, setRegister(registerValue))
 
-    expect(state.registerSensitivity).toBe(registerValue);
-    expect(state.registerSensitivity !== initialState.registerSensitivity).toBeTruthy();
+    expect(state.registerSensitivity).toBe(registerValue)
+    expect(state.registerSensitivity !== initialState.registerSensitivity).toBeTruthy()
 })

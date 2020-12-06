@@ -1,62 +1,80 @@
-export enum visible  {
-    visibleNum= 'number',
-    visibleStr= 'string',
-    visibleNull = 'null'
+import { createSlice, Dispatch } from '@reduxjs/toolkit'
+
+export enum visible {
+    visibleNum = 'number',
+    visibleStr = 'string',
+    visibleNull = 'null',
 }
 
 export enum loadStatus {
     loadingOn = 'Loading start',
     loadingOff = 'Loading finish',
-    loadingError = 'Loading error'
+    loadingError = 'Loading error',
 }
 
 let initialState: initialStateType = {
-    loading: loadStatus.loadingOff,
+    loading: loadStatus.loadingOn,
     data: [],
     filterNumber: 0,
-    filterString:'',
+    filterString: '',
     registerSensitivity: false,
-    visible: visible.visibleNull
+    visible: visible.visibleNull,
 }
 
-export const mainPageReducer = (state = initialState, action: ActionTypes): initialStateType => {
-    switch (action.type) {
-        case 'APP/LOAD_DATA':
-            return {...state, loading: action.payload}
-        case 'APP/SET_STATE':
-            return {...state, data: action.payload}
-        case 'APP/SET_FILTER_NUMBER':
-            return {...state, filterNumber: action.payload}
-        case 'APP/SET_FILTER_STRING':
-            return {...state, filterString: action.payload}
-        case 'APP/SET_VISIBLE':
-            return {...state, visible: action.payload}
-        case 'APP/SET_REGISTER':
-            return {...state, registerSensitivity: action.payload}
-        default:
-            return state
-    }
-}
+const slice = createSlice({
+    name: 'mainPage',
+    initialState: initialState,
+    reducers: {
+        loadData(state, action) {
+            state.loading = action.payload
+        },
+        setInitialState(state, action) {
+            state.data = action.payload
+        },
+        setFilterByNumber(state, action) {
+            state.filterNumber = action.payload
+        },
+        setFilterBySubstring(state, action) {
+            state.filterString = action.payload
+        },
+        setVisible(state, action) {
+            state.visible = action.payload
+        },
+        setRegister(state, action) {
+            state.registerSensitivity = action.payload
+        },
+    },
+})
+
+export const mainPageReducer = slice.reducer
 
 //actions
 
-export const loadData = (payload: loadStatus) => ({type: 'APP/LOAD_DATA', payload}as const)
-export const setInitialState = (payload: string[]) => ({type: 'APP/SET_STATE', payload}as const)
-export const setFilterByNumber = (payload: number) => ({type: 'APP/SET_FILTER_NUMBER', payload}as const)
-export const setFilterBySubstring = (payload: string) => ({type: 'APP/SET_FILTER_STRING', payload}as const)
-export const setVisible = (payload: visible) => ({type: 'APP/SET_VISIBLE', payload}as const)
-export const setRegister = (payload: boolean) => ({type: 'APP/SET_REGISTER', payload}as const)
+export const {
+    loadData,
+    setRegister,
+    setFilterByNumber,
+    setFilterBySubstring,
+    setInitialState,
+    setVisible,
+} = slice.actions
 
+// thunk
+
+export const fetchData = () => (dispatch: Dispatch) => {
+    dispatch(loadData(loadStatus.loadingOn))
+    fetch('https://cors-anywhere.herokuapp.com/https://www.mrsoft.by/data.json')
+        .then((responce) => responce.json())
+        .then((result) => {
+            dispatch(setInitialState(result['data']))
+            setTimeout(() => dispatch(loadData(loadStatus.loadingOff)), 3000)
+        })
+        .catch((err) => {
+            dispatch(loadData(loadStatus.loadingError))
+        })
+}
 
 //types
-
-type ActionTypes =
-    | ReturnType<typeof loadData>
-    | ReturnType<typeof setInitialState>
-    | ReturnType<typeof setFilterByNumber>
-    | ReturnType<typeof setFilterBySubstring>
-    | ReturnType<typeof setVisible>
-    | ReturnType<typeof setRegister>
 
 export type initialStateType = {
     loading: loadStatus

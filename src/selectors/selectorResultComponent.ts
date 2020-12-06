@@ -1,6 +1,5 @@
-import {AppRootStateType} from '../redux/store';
-import {createSelector} from '@reduxjs/toolkit';
-
+import { AppRootStateType } from '../redux/store'
+import { createSelector } from '@reduxjs/toolkit'
 
 const getWordArray = (state: AppRootStateType) => {
     return state.mainPage.data
@@ -19,14 +18,16 @@ const getRegisterValue = (state: AppRootStateType) => {
 }
 
 export const getFilteredDataByNumber = createSelector([getWordArray, getFilterNumber], (state, number) => {
-    return state.filter(word => word.length > number)
+    return state.filter((word) => word.length > number)
 })
 
-export const getFilteredDataBySubstring = createSelector([getWordArray, getFilterSubstring, getRegisterValue], (state, string, register) => {
-    if (register) {
-        return state.filter(word => word.indexOf(string) > -1)
-    } else {
-        return state.filter(word => word.toLowerCase().indexOf(string.toLowerCase()) > -1)
+export const getFilteredDataBySubstring = createSelector(
+    [getWordArray, getFilterSubstring, getRegisterValue],
+    (state, string, register) => {
+        if (register) {
+            return state.filter((word) => word.indexOf(string) > -1)
+        } else {
+            return state.filter((word) => word.toLowerCase().indexOf(string.toLowerCase()) > -1)
+        }
     }
-
-})
+)

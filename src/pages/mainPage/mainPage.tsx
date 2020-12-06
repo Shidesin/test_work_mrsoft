@@ -1,21 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
-    loadData,
+    fetchData,
     loadStatus,
     setFilterByNumber,
     setFilterBySubstring,
-    setInitialState,
     setRegister,
     setVisible,
-    visible
-} from './page-reducer';
-import {ResultComponent} from '../../components/ResultComponent';
-import {StyledInput} from '../../components/Input/Input';
-import {StyledButton} from '../../components/Button/Button';
-import styled from 'styled-components';
-import {Preloader} from '../../components/Preloader/Preloader';
-import {AppRootStateType} from '../../redux/store';
+    visible,
+} from './page-reducer'
+import { ResultComponent } from '../../components/ResultComponent'
+import { StyledInput } from '../../components/Input/Input'
+import { StyledButton } from '../../components/Button/Button'
+import styled from 'styled-components'
+import { Preloader } from '../../components/Preloader/Preloader'
+import { AppRootStateType } from '../../redux/store'
 
 const StyledWrapper = styled.div`
     margin-top: 20px;
@@ -26,23 +25,13 @@ const StyledWrapper = styled.div`
 `
 
 export const MainPage = () => {
-
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(loadData(loadStatus.loadingOn))
-        fetch('https://cors-anywhere.herokuapp.com/https://www.mrsoft.by/data.json')
-            .then(responce => responce.json())
-            .then(result => {
-                dispatch(setInitialState(result['data']))
-                setTimeout(() => dispatch(loadData(loadStatus.loadingOff)), 3000)
-            })
-            .catch(err => {
-                dispatch(loadData(loadStatus.loadingError))
-            })
-    }, [dispatch]);
+        dispatch(fetchData())
+    }, [])
 
-    const loading = useSelector<AppRootStateType>(state => state.mainPage.loading)
+    const loading = useSelector<AppRootStateType>((state) => state.mainPage.loading)
 
     const [filterValue, setFilterValue] = useState<string>('')
     const [registerValue, setRegisterValue] = useState<boolean>(false)
@@ -71,30 +60,35 @@ export const MainPage = () => {
         if (filterValue === '') {
             return true
         }
-        return !isNaN(Number(filterValue));
+        return !isNaN(Number(filterValue))
     }
 
     return (
         <StyledWrapper>
-            {loading === loadStatus.loadingOn
-                ? (<Preloader/>)
-                : (
+            {loading === loadStatus.loadingOn ? (
+                <Preloader />
+            ) : (
+                <div>
+                    <StyledInput
+                        value={filterValue}
+                        placeholder={'Please, input value filter...'}
+                        onChangeText={setFilterValue}
+                    />
                     <div>
-                        <StyledInput value={filterValue} placeholder={'Please, input value filter...'}
-                                     onChangeText={setFilterValue}/>
-                        <div>Register sensitivity: <input type={'checkbox'} onClick={checkRegister}/></div>
-                        <div>
-                            <StyledButton onClick={filterByLength} disabled={buttonNumberDisabled}>Filter by
-                                length</StyledButton>
-                            <StyledButton onClick={filterBySubstring} disabled={buttonStringDisabled()}>Filter by
-                                substring</StyledButton>
-                        </div>
-                        <ResultComponent/>
+                        Register sensitivity: <input type={'checkbox'} onClick={checkRegister} />
                     </div>
-                )
-            }
+                    <div>
+                        <StyledButton onClick={filterByLength} disabled={buttonNumberDisabled}>
+                            Filter by length
+                        </StyledButton>
+                        <StyledButton onClick={filterBySubstring} disabled={buttonStringDisabled()}>
+                            Filter by substring
+                        </StyledButton>
+                    </div>
+                    <ResultComponent />
+                </div>
+            )}
             {loading === loadStatus.loadingError ? <>'Error loading data'</> : null}
         </StyledWrapper>
-
     )
-};
+}
